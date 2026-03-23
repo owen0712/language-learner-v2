@@ -25,6 +25,12 @@ export function CourseDashboard() {
   const totalSections = course.sections.length;
   const completionPercent = totalSections === 0 ? 0 : Math.round((completedSectionCount / totalSections) * 100);
   const flashcardCount = Object.keys(progress?.flashcardScores ?? {}).length;
+  const totalXp = completedSectionCount * 25 + flashcardCount * 5;
+  const streakDays = Math.max(1, completedSectionCount * 2 + (flashcardCount > 0 ? 1 : 0));
+  const heartsLeft = Math.max(1, 5 - Math.min(4, totalSections - completedSectionCount));
+  const nextLesson = course.sections.find((section) => !(progress?.completedSections.includes(section.title) ?? false)) ?? course.sections[0];
+  const dailyQuestTarget = Math.min(3, totalSections || 1);
+  const dailyQuestProgress = Math.min(dailyQuestTarget, completedSectionCount);
 
   useEffect(() => {
     setScores(progress?.flashcardScores ?? {});
@@ -66,18 +72,48 @@ export function CourseDashboard() {
           <p className="eyebrow">Duolingo-inspired learning flow</p>
           <h1>Polyglot Path</h1>
           <p className="intro-copy">
-            Organize study into a playful path with focused lessons, daily practice, quick review,
-            and visible momentum for Japanese, Korean, or Thai.
+            A playful lesson lane with streak energy, daily quests, XP, and bite-sized skill bubbles
+            for Japanese, Korean, or Thai.
           </p>
         </div>
-        <div className="streak-pill">
-          <span className="streak-number">{completionPercent}%</span>
-          <span className="streak-label">Path complete</span>
+        <div className="topbar-stats">
+          <div className="streak-pill">
+            <span className="streak-number">{streakDays}</span>
+            <span className="streak-label">day streak</span>
+          </div>
+          <div className="streak-pill xp-pill">
+            <span className="streak-number">{totalXp}</span>
+            <span className="streak-label">total XP</span>
+          </div>
         </div>
       </section>
 
       <section className="duo-layout">
         <aside className="sidebar card">
+          <div className="sidebar-block mascot-panel">
+            <div>
+              <p className="sidebar-label">Today&apos;s mission</p>
+              <h2>{capitalize(language)} sprint</h2>
+              <p className="helper">Finish one lesson, review flashcards, and keep your momentum alive.</p>
+            </div>
+            <div className="mascot-bubble" aria-hidden="true">🦉</div>
+          </div>
+
+          <div className="sidebar-block stats-grid trio">
+            <article className="mini-stat success">
+              <span>{streakDays}</span>
+              <strong>Streak</strong>
+            </article>
+            <article className="mini-stat info">
+              <span>{totalXp}</span>
+              <strong>XP</strong>
+            </article>
+            <article className="mini-stat accent">
+              <span>{heartsLeft} / 5</span>
+              <strong>Hearts</strong>
+            </article>
+          </div>
+
           <div className="sidebar-block">
             <p className="sidebar-label">Course setup</p>
             <label>
@@ -99,50 +135,83 @@ export function CourseDashboard() {
             <p className="status">{status}</p>
           </div>
 
-          <div className="sidebar-block stats-grid">
-            <article className="mini-stat success">
-              <span>{completedSectionCount}/{totalSections}</span>
-              <strong>Lessons cleared</strong>
-            </article>
-            <article className="mini-stat info">
-              <span>{flashcardCount}</span>
-              <strong>Cards tracked</strong>
-            </article>
-            <article className="mini-stat accent">
-              <span>{levelLabels[level]}</span>
-              <strong>League</strong>
-            </article>
-          </div>
-
           <div className="sidebar-block quest-card">
-            <p className="sidebar-label">Daily quest</p>
-            <h2>{course.headline}</h2>
+            <div className="panel-header compact-header">
+              <div>
+                <p className="sidebar-label">Daily quest</p>
+                <h2>{course.headline}</h2>
+              </div>
+              <span className="panel-chip">{dailyQuestProgress}/{dailyQuestTarget}</span>
+            </div>
             <p className="helper">{course.description}</p>
+            <div className="quest-progress">
+              <div className="quest-progress-bar" style={{ width: `${(dailyQuestProgress / dailyQuestTarget) * 100}%` }} />
+            </div>
             <ul className="goal-list compact">
               {course.goals.map((goal) => <li key={goal}>{goal}</li>)}
             </ul>
             <p className="helper">Last sync: {progress?.updatedAt ?? 'Not saved yet'}</p>
           </div>
+
+          <div className="sidebar-block league-card">
+            <p className="sidebar-label">League status</p>
+            <h2>{levelLabels[level]} League</h2>
+            <ul className="goal-list compact">
+              <li>{completedSectionCount}/{totalSections} skills completed</li>
+              <li>{flashcardCount} flashcards tracked</li>
+              <li>Next focus: {nextLesson?.focus ?? 'Generate a path'}</li>
+            </ul>
+          </div>
         </aside>
 
         <div className="content-column">
-          <section className="hero-path card">
-            <div className="hero-path-copy">
-              <p className="eyebrow">Unit map</p>
+          <section className="hero-banner card">
+            <div className="hero-copy">
+              <p className="eyebrow">Continue learning</p>
               <h2>{capitalize(language)} {capitalize(level)} journey</h2>
               <p>
-                Move through bite-sized lessons in order: unlock the next skill, review weak spots,
-                then finish with flashcards to reinforce recall.
+                Follow the winding path, clear each skill bubble, and stack confidence through
+                guided practice, review, and mastery checks.
               </p>
             </div>
-            <div className="path-rail">
+            <div className="hero-metrics">
+              <article>
+                <strong>{completionPercent}%</strong>
+                <span>course progress</span>
+              </article>
+              <article>
+                <strong>{course.practicePlan.length}</strong>
+                <span>today&apos;s drills</span>
+              </article>
+              <article>
+                <strong>{course.outcomes.length}</strong>
+                <span>target outcomes</span>
+              </article>
+            </div>
+          </section>
+
+          <section className="path-experience card">
+            <div className="panel-header">
+              <div>
+                <p className="eyebrow">Skill path</p>
+                <h2>Learn like a game board</h2>
+              </div>
+              <span className="panel-chip">Next up: {nextLesson?.title ?? 'Lesson 1'}</span>
+            </div>
+            <div className="path-map">
               {course.sections.map((section, index) => {
                 const isComplete = progress?.completedSections.includes(section.title) ?? false;
+                const isCurrent = nextLesson?.title === section.title && !isComplete;
                 return (
-                  <article key={section.title} className={`path-node ${isComplete ? 'complete' : ''}`}>
-                    <div className="path-badge">{index + 1}</div>
-                    <div className="path-node-copy">
-                      <p className="path-node-kicker">Skill {index + 1}</p>
+                  <article
+                    key={section.title}
+                    className={`path-orb ${isComplete ? 'complete' : ''} ${isCurrent ? 'current' : ''} ${index % 2 === 1 ? 'right' : 'left'}`}
+                  >
+                    <div className="path-orb-button">
+                      <span>{index + 1}</span>
+                    </div>
+                    <div className="path-orb-copy">
+                      <p className="path-node-kicker">Unit {index + 1}</p>
                       <h3>{section.focus}</h3>
                       <p>{section.content[0]}</p>
                     </div>
@@ -156,10 +225,10 @@ export function CourseDashboard() {
             <article className="card panel-card">
               <div className="panel-header">
                 <div>
-                  <p className="eyebrow">Today</p>
+                  <p className="eyebrow">Warm up</p>
                   <h2>Practice routine</h2>
                 </div>
-                <span className="panel-chip">{course.practicePlan.length} steps</span>
+                <span className="panel-chip">{course.practicePlan.length} drills</span>
               </div>
               <ol className="practice-list">
                 {course.practicePlan.map((item) => <li key={item}>{item}</li>)}
@@ -169,13 +238,13 @@ export function CourseDashboard() {
             <article className="card panel-card">
               <div className="panel-header">
                 <div>
-                  <p className="eyebrow">Coach notes</p>
+                  <p className="eyebrow">Quest board</p>
                   <h2>Progress snapshot</h2>
                 </div>
                 <span className="panel-chip">{completionPercent}% done</span>
               </div>
               <ul className="goal-list">
-                <li>Completed modules: {completedSectionCount}</li>
+                <li>Completed lessons: {completedSectionCount}</li>
                 <li>Tracked flashcards: {flashcardCount}</li>
                 <li>Course outcomes mapped: {course.outcomes.length}</li>
                 <li>Firebase sync activates when env vars are configured.</li>
@@ -187,10 +256,10 @@ export function CourseDashboard() {
             <article className="card panel-card">
               <div className="panel-header">
                 <div>
-                  <p className="eyebrow">Course map</p>
+                  <p className="eyebrow">Rewards</p>
                   <h2>Learning outcomes</h2>
                 </div>
-                <span className="panel-chip">{course.outcomes.length} targets</span>
+                <span className="panel-chip">{course.outcomes.length} goals</span>
               </div>
               <ul className="goal-list">
                 {course.outcomes.map((item) => <li key={item}>{item}</li>)}
@@ -200,7 +269,7 @@ export function CourseDashboard() {
             <article className="card panel-card">
               <div className="panel-header">
                 <div>
-                  <p className="eyebrow">End goal</p>
+                  <p className="eyebrow">Boss level</p>
                   <h2>Milestones & capstone</h2>
                 </div>
                 <span className="panel-chip">{course.milestones.length} checkpoints</span>
@@ -215,7 +284,7 @@ export function CourseDashboard() {
           <section className="card">
             <div className="panel-header">
               <div>
-                <p className="eyebrow">Lesson path</p>
+                <p className="eyebrow">Lesson lane</p>
                 <h2>Core skills</h2>
               </div>
               <span className="panel-chip">Tap through in order</span>
@@ -271,6 +340,7 @@ export function CourseDashboard() {
                 const key = `${course.language}-${course.level}-${index}`;
                 return (
                   <article key={key} className="flashcard duo-flashcard">
+                    <div className="flashcard-badge">+5 XP</div>
                     <p className="flash-front">{card.front}</p>
                     <p className="flash-back">{card.back}</p>
                     <p className="helper">{card.proficiencyHint}</p>
