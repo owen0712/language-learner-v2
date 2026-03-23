@@ -1,0 +1,71 @@
+:root {
+  color-scheme: dark;
+  --bg: #07111f;
+  --card: #132238;
+  --card-2: #1b3250;
+  --text: #eff6ff;
+  --muted: #98adc7;
+  --accent: #7dd3fc;
+  --accent-2: #c084fc;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; background: linear-gradient(180deg, #050b14, #0c1828); color: var(--text); font-family: Arial, Helvetica, sans-serif; }
+a { color: inherit; }
+button, select, input { font: inherit; }
+
+.page {
+  width: min(1180px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: 32px 0 64px;
+  display: grid;
+  gap: 20px;
+}
+
+.card {
+  background: rgba(19, 34, 56, 0.9);
+  border: 1px solid rgba(125, 211, 252, 0.18);
+  border-radius: 24px;
+  padding: 24px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+}
+
+.hero h1 { margin: 8px 0 12px; font-size: clamp(2rem, 5vw, 4rem); }
+.eyebrow { text-transform: uppercase; letter-spacing: 0.18em; color: var(--accent); font-size: 0.75rem; }
+.grid { display: grid; gap: 16px; }
+.grid.two { grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+label { display: grid; gap: 8px; color: var(--muted); }
+select, input {
+  border-radius: 14px;
+  border: 1px solid rgba(152, 173, 199, 0.3);
+  padding: 12px 14px;
+  background: var(--card-2);
+  color: var(--text);
+}
+button {
+  border: none;
+  border-radius: 999px;
+  padding: 12px 18px;
+  background: linear-gradient(90deg, var(--accent), var(--accent-2));
+  color: #07111f;
+  font-weight: 700;
+  cursor: pointer;
+}
+button.secondary { background: transparent; color: var(--text); border: 1px solid rgba(125, 211, 252, 0.3); }
+.actions { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 20px; }
+.status, .helper { color: var(--muted); }
+.module-list, .flashcards { display: grid; gap: 14px; }
+.module, .flashcard {
+  background: rgba(27, 50, 80, 0.7);
+  border-radius: 18px;
+  padding: 18px;
+  border: 1px solid rgba(192, 132, 252, 0.12);
+}
+.module-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: start;
+}
+.flash-front { font-size: 1.4rem; font-weight: 700; color: var(--accent); }
+code { background: rgba(255,255,255,0.08); padding: 2px 6px; border-radius: 6px; }
