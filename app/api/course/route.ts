@@ -14,6 +14,7 @@ export async function POST(request: NextRequest) {
 
   const fallback = fallbackCourse(language, level);
   const apiKey = process.env.GEMINI_API_KEY;
+  const model = process.env.GEMINI_MODEL ?? 'gemini-2.5-flash';
 
   if (!apiKey) {
     return NextResponse.json({ course: fallback, source: 'fallback' });
@@ -31,7 +32,7 @@ export async function POST(request: NextRequest) {
   ].join(' ');
 
   try {
-    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
+    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`,
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

@@ -21,7 +21,7 @@ The relevant files are:
 
 - `lib/firebase.ts` initializes the Firebase app and Firestore client using public environment variables.
 - `lib/progress.ts` writes progress data to Firestore when Firebase is configured.
-- `app/api/course/route.ts` calls the Gemini API with `GEMINI_API_KEY` and falls back to local course data if the key is missing or the request fails.
+- `app/api/course/route.ts` calls the Gemini API with `GEMINI_API_KEY`, uses `GEMINI_MODEL` to select the exact model, and falls back to local course data if the key is missing or the request fails.
 
 ## Prerequisites
 
@@ -55,6 +55,7 @@ NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=
 NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=
 NEXT_PUBLIC_FIREBASE_APP_ID=
 GEMINI_API_KEY=
+GEMINI_MODEL=gemini-2.5-flash
 ```
 
 ## 3. Connect Firebase
@@ -98,6 +99,7 @@ This project calls the Gemini API from `app/api/course/route.ts`, not directly f
 
 ```env
 GEMINI_API_KEY=your_key_here
+GEMINI_MODEL=gemini-2.5-flash
 ```
 
 ### Step B: How the API is used
@@ -106,7 +108,7 @@ When the UI requests `/api/course`:
 
 - The app validates the selected `language` and `level`.
 - The route builds a prompt for course generation.
-- The server sends a POST request to the Gemini `generateContent` endpoint.
+- The server sends a POST request to the Gemini `generateContent` endpoint using `GEMINI_MODEL` (default: `gemini-2.5-flash`).
 - If the request succeeds, the generated course is returned.
 - If the key is missing or Gemini fails, the app returns fallback course content.
 
@@ -159,6 +161,7 @@ Check the following:
 Check the following:
 
 - `GEMINI_API_KEY` is set in `.env.local`,
+- `GEMINI_MODEL` matches a model your Gemini key can access,
 - you restarted `npm run dev` after updating env values,
 - the key has access to the Gemini API,
 - and outbound requests are allowed in your environment.
@@ -187,4 +190,4 @@ cp .env.example .env.local
 npm run dev
 ```
 
-After that, add your Firebase config and Gemini API key to `.env.local`.
+After that, add your Firebase config, Gemini API key, and optional Gemini model override to `.env.local`.
