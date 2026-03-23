@@ -20,7 +20,7 @@ export function CourseDashboard() {
   const [status, setStatus] = useState('Choose a track and jump into today\'s lesson path.');
   const [scores, setScores] = useState<Record<string, number>>({});
 
-  const progress = useMemo(() => getStoredProgress()[`${language}-${level}`], [language, level, course]);
+  const progress = useMemo(() => getStoredProgress()[`${language}-${level}`], [language, level]);
   const completedSectionCount = progress?.completedSections.length ?? 0;
   const totalSections = course.sections.length;
   const completionPercent = totalSections === 0 ? 0 : Math.round((completedSectionCount / totalSections) * 100);
@@ -117,6 +117,7 @@ export function CourseDashboard() {
           <div className="sidebar-block quest-card">
             <p className="sidebar-label">Daily quest</p>
             <h2>{course.headline}</h2>
+            <p className="helper">{course.description}</p>
             <ul className="goal-list compact">
               {course.goals.map((goal) => <li key={goal}>{goal}</li>)}
             </ul>
@@ -176,8 +177,38 @@ export function CourseDashboard() {
               <ul className="goal-list">
                 <li>Completed modules: {completedSectionCount}</li>
                 <li>Tracked flashcards: {flashcardCount}</li>
+                <li>Course outcomes mapped: {course.outcomes.length}</li>
                 <li>Firebase sync activates when env vars are configured.</li>
               </ul>
+            </article>
+          </section>
+
+          <section className="grid-panels">
+            <article className="card panel-card">
+              <div className="panel-header">
+                <div>
+                  <p className="eyebrow">Course map</p>
+                  <h2>Learning outcomes</h2>
+                </div>
+                <span className="panel-chip">{course.outcomes.length} targets</span>
+              </div>
+              <ul className="goal-list">
+                {course.outcomes.map((item) => <li key={item}>{item}</li>)}
+              </ul>
+            </article>
+
+            <article className="card panel-card">
+              <div className="panel-header">
+                <div>
+                  <p className="eyebrow">End goal</p>
+                  <h2>Milestones & capstone</h2>
+                </div>
+                <span className="panel-chip">{course.milestones.length} checkpoints</span>
+              </div>
+              <ul className="goal-list">
+                {course.milestones.map((item) => <li key={item}>{item}</li>)}
+              </ul>
+              <p className="helper"><strong>Final project:</strong> {course.finalProject}</p>
             </article>
           </section>
 
@@ -206,6 +237,21 @@ export function CourseDashboard() {
                     <ul className="goal-list">
                       {section.content.map((item) => <li key={item}>{item}</li>)}
                     </ul>
+                    <div className="lesson-details">
+                      <p className="eyebrow">Module objectives</p>
+                      <ul className="goal-list compact">
+                        {section.objectives.map((item) => <li key={item}>{item}</li>)}
+                      </ul>
+                      <p className="eyebrow">Lesson sequence</p>
+                      <ul className="goal-list compact">
+                        {section.lessons.map((lesson) => (
+                          <li key={lesson.title}>
+                            <strong>{lesson.title}</strong>: {lesson.activity} <em>Outcome:</em> {lesson.outcome}
+                          </li>
+                        ))}
+                      </ul>
+                      <p className="helper">{section.assessment}</p>
+                    </div>
                   </article>
                 );
               })}

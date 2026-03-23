@@ -22,13 +22,16 @@ export async function POST(request: NextRequest) {
 
   const prompt = [
     'Return valid JSON only.',
-    'Create a language learning course object with keys: headline, goals, sections, flashcards, practicePlan.',
+    'Create a language learning course object with keys: headline, description, goals, outcomes, sections, flashcards, practicePlan, milestones, finalProject.',
     `Language: ${language}. Level: ${level}.`,
+    'Use a fuller online course structure with an overview, measurable outcomes, modules, bite-sized lessons, practice, assessment, milestones, and a final project.',
     'Support Japanese, Korean, and Thai study.',
-    'If level is beginner, include character, pronunciation, and grammar explicitly.',
-    'sections must be an array of {title, focus, content:string[]}.',
+    'If level is beginner, include script or sound system, pronunciation, and foundational grammar explicitly.',
+    'sections must be an array of {title, focus, objectives:string[], lessons:{title, activity, outcome}[], assessment, content:string[]}.',
+    'Each module should feel substantial, practical, and sequenced from input to guided practice to output.',
     'flashcards must be an array of {front, back, proficiencyHint}.',
-    'goals and practicePlan must be string arrays.',
+    'goals, outcomes, practicePlan, and milestones must be string arrays.',
+    'finalProject must be one string describing the capstone task for the end of the course.',
   ].join(' ');
 
   try {
