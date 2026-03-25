@@ -10,6 +10,12 @@ A Next.js language learner app for Japanese, Korean, and Thai with beginner, int
 - Firebase progress persistence with localStorage fallback.
 - Ready for Vercel deployment using `vercel.json`.
 
+## Business-facing repository assistant documentation
+
+For business stakeholders evaluating repository analysis workflows, see:
+
+- `docs/business-user-guide.md` for a business user oriented workflow, outputs, and governance checklist.
+
 ## How API and Firebase connections work
 
 This project uses two external integrations:
