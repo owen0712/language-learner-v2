@@ -1,5 +1,5 @@
-import { CourseDashboard } from '@/components/course-dashboard';
+import { RepoAssistantApp } from '@/components/repo-assistant-app';
 
 export default function Home() {
-  return <CourseDashboard />;
+  return <RepoAssistantApp />;
 }
