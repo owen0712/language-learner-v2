@@ -1,5 +1,5 @@
-import { RepoAssistantApp } from '@/components/repo-assistant-app';
+import { LearningApp } from '@/components/learning-app';
 
 export default function Home() {
-  return <RepoAssistantApp />;
+  return <LearningApp />;
 }
