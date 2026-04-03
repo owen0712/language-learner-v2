@@ -3,16 +3,16 @@ import { NextResponse } from 'next/server';
 type NewsItem = {
   title: string;
   link: string;
-  source: 'Bloomberg' | 'Yahoo Finance';
+  source: 'Yahoo Finance';
   published?: string;
 };
 
 const MAX_ITEMS = 20;
 
-const feeds = [
-  { source: 'Bloomberg' as const, url: 'https://feeds.bloomberg.com/markets/news.rss' },
-  { source: 'Yahoo Finance' as const, url: 'https://finance.yahoo.com/news/rssindex' },
-];
+const feed = {
+  source: 'Yahoo Finance' as const,
+  url: 'https://finance.yahoo.com/news/rssindex',
+};
 
 const getTag = (content: string, tag: string) => {
   const tagMatch = content.match(new RegExp(`<${tag}>([\\s\\S]*?)<\\/${tag}>`, 'i'));
@@ -50,23 +50,14 @@ async function readFeed(url: string, source: NewsItem['source']): Promise<NewsIt
       link: decodeXml(getTag(block, 'link')),
       published: decodeXml(getTag(block, 'pubDate')),
     }))
-    .filter((item) => item.title && item.link);
+    .filter((item) => item.title && item.link)
+    .slice(0, MAX_ITEMS);
 }
 
 export async function GET() {
   try {
-    const data = await Promise.all(feeds.map((feed) => readFeed(feed.url, feed.source)));
-
-    const merged = data
-      .flat()
-      .sort((a, b) => {
-        const left = a.published ? Date.parse(a.published) : 0;
-        const right = b.published ? Date.parse(b.published) : 0;
-        return right - left;
-      })
-      .slice(0, MAX_ITEMS);
-
-    return NextResponse.json({ items: merged });
+    const items = await readFeed(feed.url, feed.source);
+    return NextResponse.json({ items });
   } catch {
     return NextResponse.json({ items: [] }, { status: 200 });
   }
