@@ -36,6 +36,44 @@ const lessons = [
     en: 'Financial planner knowledge',
     zh: '财务规划师知识',
   },
+  {
+    key: 'lifeRpg',
+    en: 'Life RPG operating system (quests, XP, talent tree, achievements)',
+    zh: '人生 RPG 操作系统（任务、经验值、天赋树、成就）',
+  },
+];
+
+const lifeRpgModules = [
+  {
+    icon: '🧭',
+    en: 'Traveler Profile: character card, attributes, and current state.',
+    zh: '旅行者档案：角色卡、属性面板、当前状态。',
+  },
+  {
+    icon: '🧪',
+    en: 'Element Resonance: 5 growth lines and breakthrough requirements.',
+    zh: '元素共鸣：5条成长线与突破条件。',
+  },
+  {
+    icon: '📜',
+    en: 'Quest Board: Archon quests, daily commissions, side quests, and spiral challenges.',
+    zh: '冒险之证：主线、每日委托、支线与高难挑战。',
+  },
+  {
+    icon: '🌳',
+    en: 'Talent Tree: visible skill levels and unlock conditions.',
+    zh: '天赋树：技能等级可视化与解锁条件。',
+  },
+  {
+    icon: '🛡️',
+    en: 'Artifacts: tools and resource loadout with set bonuses.',
+    zh: '圣遗物：工具与资源装备，支持套装加成。',
+  },
+  {
+    icon: '⭐',
+    en: 'Adventure Log + Achievement System: EXP settlement, milestones, and hidden achievements.',
+    zh: '冒险日志+成就系统：经验结算、里程碑与隐藏成就。',
+  },
 ];
 
 const copy = {
@@ -51,6 +89,8 @@ const copy = {
     authTitle: 'Account access',
     authHint: 'Sign in with your email or create a new account to start learning.',
     modulesTitle: 'Learning Tracks',
+    lifeRpgTitle: 'New App Track: Life RPG OS',
+    lifeRpgSubtitle: 'Turn work into quests, skills into talent trees, and yearly review into achievement unlocks.',
     marketNewsTitle: 'Latest top 20 Yahoo Finance headlines',
     refreshNews: 'Refresh News',
     loadingNews: 'Loading latest finance news...',
@@ -71,6 +111,8 @@ const copy = {
     authTitle: '账号登录',
     authHint: '使用邮箱登录，或先注册新账号后开始学习。',
     modulesTitle: '学习主题',
+    lifeRpgTitle: '新增模块：人生 RPG 系统',
+    lifeRpgSubtitle: '把工作变任务、把学习变天赋树、把复盘变成就解锁。',
     marketNewsTitle: 'Yahoo Finance 最新 20 条新闻',
     refreshNews: '刷新新闻',
     loadingNews: '正在加载最新财经新闻...',
@@ -214,6 +256,19 @@ export function LearningApp() {
           </ul>
         </section>
       </div>
+
+      <section className="card modules-card">
+        <h2>{t.lifeRpgTitle}</h2>
+        <p className="sub">{t.lifeRpgSubtitle}</p>
+        <ul className="lesson-list">
+          {lifeRpgModules.map((module) => (
+            <li key={module.icon + module.en}>
+              <span className="lesson-index">{module.icon}</span>
+              <span>{language === 'en' ? module.en : module.zh}</span>
+            </li>
+          ))}
+        </ul>
+      </section>
 
       <section className="card news-card">
         <div className="row news-header">
